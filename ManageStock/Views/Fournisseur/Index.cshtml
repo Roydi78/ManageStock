@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ManageStock.Models.Fournisseur>
+
+@{
+    ViewData["Title"] = "Fournisseur";
+}
+
+<h4>Liste des Fournisseurs </h4>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Ajouter +</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Adresse)
+            </th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nom)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adresse)
+            </td>
+           
+            <td align="right">
+               <a asp-action="Details" asp-route-id="@item.IdFournisseur" class="btn btn-info">Détail</a>
+               <a asp-action="Edit" asp-route-id="@item.IdFournisseur" class="btn btn-warning">Modif.</a>
+               <a asp-action="Delete" asp-route-id="@item.IdFournisseur" class="btn btn-danger">Suppr.</a>
+                    
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

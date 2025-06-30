@@ -1,5 +1,6 @@
 using ManageStock.Data;
 using ManageStock.Data.Services.Categorie;
+using ManageStock.Data.Services.Fournisseur;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<ManageStockContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
 builder.Services.AddScoped<ICategorieService, CategorieService>();
+builder.Services.AddScoped<IFournisseurService, FournisseurService>();
 
 var app = builder.Build();
 

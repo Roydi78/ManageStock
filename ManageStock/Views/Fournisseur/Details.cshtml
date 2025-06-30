@@ -1,0 +1,83 @@
+﻿@model ManageStock.Models.Fournisseur
+
+@{
+    ViewData["Title"] = "Details du Fournisseur";
+}
+
+<div>
+    <h4>Détails Fournisseur</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(f => f.Nom)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(f => f.Nom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(f => f.Adresse)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(f => f.Adresse)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(f => f.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(f => f.Email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(f => f.Téléphone)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(f => f.Téléphone)
+        </dd>
+    </dl>
+</div>
+
+<hr />
+<h5>Produits fournis</h5>
+@if (Model.Produits != null && Model.Produits.Any())
+{
+    <ul>
+        @foreach (var produit in Model.Produits)
+        {
+            <li>@produit.Nom</li>
+        }
+    </ul>
+}
+else
+{
+    <p><em>Aucun produit associé.</em></p>
+}
+
+<hr />
+<h5>Entrées de stock</h5>
+@if (Model.Entreestocks != null && Model.Entreestocks.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Quantité</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entree in Model.Entreestocks)
+            {
+                <tr>
+                    <td>@entree.Quantité</td>
+                    <td>@(entree.DateEntree.HasValue ? entree.DateEntree.Value.ToShortDateString() : "N/A")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p><em>Aucune entrée de stock enregistrée.</em></p>
+}
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdFournisseur" class="btn btn-warning">Modif.</a>
+    <a asp-action="Index" class="btn btn-secondary">Retour</a>
+</div>

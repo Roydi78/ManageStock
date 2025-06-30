@@ -44,20 +44,47 @@ namespace ManageStock.Data.Services.Fournisseur
             return await _context.Fournisseurs.ToListAsync();
         }
 
-        public Task<Models.Fournisseur?> GetById(int id)
+        public async Task<Models.Fournisseur?> GetById(int id)
         {
-            var fournisseur = _context.Fournisseurs.Find(id);
+            var fournisseur = await _context.Fournisseurs.FindAsync(id);
             if (fournisseur == null)
             {
-                return Task.FromResult<Models.Fournisseur?>(null);
+                return null;
             }
-            return Task.FromResult<Models.Fournisseur?>(fournisseur);
+            return fournisseur;
         }
 
-        public async Task Update(int id, Models.Fournisseur fournisseur)
+        public async Task Update(Models.Fournisseur fournisseur)
         {
             _context.Entry(fournisseur).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Models.Fournisseur?> FirstorDefault(int id)
+        {
+            var fournisseur = await _context.Fournisseurs.FirstOrDefaultAsync(m => m.IdFournisseur == id);
+            if(fournisseur == null)
+            {
+                return null;
+            }
+
+            return fournisseur;
+        }
+
+        public async Task<Models.Fournisseur?> DetailFournisseur(int id)
+        {
+            
+            var fournisseur = await _context.Fournisseurs
+                .Include(f => f.Produits)
+                .Include(f => f.Entreestocks)
+                .FirstOrDefaultAsync(m => m.IdFournisseur == id);
+
+            if (fournisseur == null)
+            {
+                return null;
+            }
+
+            return fournisseur;
         }
     }
 }
