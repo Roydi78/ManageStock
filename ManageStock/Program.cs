@@ -1,6 +1,8 @@
 using ManageStock.Data;
 using ManageStock.Data.Services.Categorie;
+using ManageStock.Data.Services.Entrepot;
 using ManageStock.Data.Services.Fournisseur;
+using ManageStock.Data.Services.Produit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,8 @@ builder.Services.AddDbContext<ManageStockContext>(options =>
 
 builder.Services.AddScoped<ICategorieService, CategorieService>();
 builder.Services.AddScoped<IFournisseurService, FournisseurService>();
+builder.Services.AddScoped<IEntrepotService, EntrepotService>();
+builder.Services.AddScoped<IProduitService, ProduitService>();
 
 var app = builder.Build();
 
