@@ -1,0 +1,52 @@
+﻿@model ManageStock.Models.Entreestock
+
+@{
+    ViewData["Title"] = "Supprimer une Entrée de Stock";
+}
+
+<h4>Suppression Entrée de stock</h4>
+<hr />
+<h6>Êtes-vous sûrs de vouloir supprimer cet élément ?</h6>
+<div>
+    
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateEntree)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateEntree)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdProduitNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdProduitNavigation.Nom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Quantité)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Quantité)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdFournisseurNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdFournisseurNavigation.Nom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdEntrepotNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdEntrepotNavigation.Nom)
+        </dd>
+        
+        
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="IdEntree" />
+        <input type="submit" value="Supprimer" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Retour</a>
+    </form>
+</div>

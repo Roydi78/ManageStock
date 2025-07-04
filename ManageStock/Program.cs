@@ -1,8 +1,11 @@
 using ManageStock.Data;
 using ManageStock.Data.Services.Categorie;
+using ManageStock.Data.Services.EntreeStock;
 using ManageStock.Data.Services.Entrepot;
 using ManageStock.Data.Services.Fournisseur;
 using ManageStock.Data.Services.Produit;
+using ManageStock.Data.Services.SortieStock;
+using ManageStock.Data.Services.Stock;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +20,9 @@ builder.Services.AddScoped<ICategorieService, CategorieService>();
 builder.Services.AddScoped<IFournisseurService, FournisseurService>();
 builder.Services.AddScoped<IEntrepotService, EntrepotService>();
 builder.Services.AddScoped<IProduitService, ProduitService>();
+builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddScoped<IEntreeStockService, EntreeStockService>();
+builder.Services.AddScoped<ISortieStockService, SortieStockService>();
 
 var app = builder.Build();
 

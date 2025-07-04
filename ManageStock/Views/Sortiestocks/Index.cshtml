@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ManageStock.Models.Sortiestock>
+
+@{
+    ViewData["Title"] = "Sorties de stock";
+}
+
+<h4>Liste des Sorties de stock </h4>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Ajouter +</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateSortie)
+               
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdProduitNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantité)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdEntrepotNavigation)
+            </th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateSortie)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdProduitNavigation.Nom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantité)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdEntrepotNavigation.Nom)
+                </td>
+
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.IdSortie" class="btn btn-info">Détail</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdSortie" class="btn btn-warning">Modif.</a>
+                    <a asp-action="Delete" asp-route-id="@item.IdSortie" class="btn btn-danger">Suppr.</a>
+                </td>
+        </tr>
+}
+    </tbody>
+</table>

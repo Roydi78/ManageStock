@@ -6,6 +6,7 @@ namespace ManageStock.Models;
 
 public partial class Categorie
 {
+  
     public int IdCategorie { get; set; }
 
     [Required(ErrorMessage = "La catégorie doit nécessairement avoir un nom")]

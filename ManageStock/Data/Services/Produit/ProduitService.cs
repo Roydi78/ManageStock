@@ -49,12 +49,18 @@ namespace ManageStock.Data.Services.Produit
 
         public async Task<Models.Produit?> FirstorDefault(int id)
         {
-            return  await _context.Produits.FirstOrDefaultAsync(m => m.IdProduit == id);      
+            var produit = await _context.Produits
+                                    .Include(p => p.IdCategorieNavigation)
+                                    .Include(p => p.IdFournisseurNavigation)
+                                    .FirstOrDefaultAsync(m => m.IdProduit == id);
+            return  produit;
         }
 
         public async Task<IEnumerable<Models.Produit>> GetAll()
         {
-            return await _context.Produits.ToListAsync();
+            var manageStockContext = _context.Produits.Include(p => p.IdCategorieNavigation).Include(p => p.IdFournisseurNavigation);
+            return await manageStockContext.ToListAsync();
+            
         }
 
         public async Task<Models.Produit?> GetById(int id)

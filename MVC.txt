@@ -1,0 +1,45 @@
+MVC (Process) 
+
+Connexion base de données (PostgreSQL)
+
+1-Créer la base de données dans postgresql
+
+2-Importer les références packages
+   Microsoft.EntityFramexorkCore
+   Microsoft.EntityFramexorkCore.Tools
+   Npgsql.EntityFrameworkcore.PostgreSQL
+
+
+Dans appsettings.json
+ "ConnectionStrings": {
+   "PostgresConnection": "Host=XX.XX.XX.X;Port=XXXX;Username=username;Password=password;Database=dbname"
+
+Dans Program.cs
+builder.Services.AddDbContext<ManageStockContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+
+
+3- creation du DbContext dans Package Manager Console
+
+Scaffold-DbContext "Host=localhost;Database=gestion_stock;Username=postgres;Password=secret" `
+  Npgsql.EntityFrameworkCore.PostgreSQL `
+  -OutputDir Models `
+  -ContextDir Data `
+  -Context StockDbContext `
+  -f
+
+4- Creation d'un module
+
+Creer un dossier du module dans le dossier Data/Services
+	Créer un interface 
+	Creer une Class pour l'interface
+
+Dans Program.cs
+	Ajouter builder.Services.AddScoped<Interface, Class de l'interface>();
+
+Creer le controller avec Razor pour creer les méthodes et les vues associées
+
+
+
+
+

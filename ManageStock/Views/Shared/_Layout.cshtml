@@ -38,6 +38,17 @@
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Produits" asp-action="Index">Produits</a></li>
                             </ul>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Mouvements de stock
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Stocks" asp-action="Index">Stock</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Entreestocks" asp-action="Index">Entrée stock</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Sortiestocks" asp-action="Index">Sortie stock</a></li>
+                            </ul>
+                        </li>
                     </ul>
                     
                 </div>

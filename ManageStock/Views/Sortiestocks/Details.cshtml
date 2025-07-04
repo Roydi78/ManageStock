@@ -1,0 +1,49 @@
+﻿@model ManageStock.Models.Sortiestock
+
+@{
+    ViewData["Title"] = "Details de la sortie de stock";
+}
+
+
+<div>
+    <h4>Détails de la sortie de stock</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateSortie)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateSortie)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdProduitNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdProduitNavigation.Nom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Quantité)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Quantité)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdEntrepotNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdEntrepotNavigation.Nom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Destination)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Destination)
+        </dd>
+          
+    </dl>
+</div>
+<div>
+    
+    <a asp-action="Edit" asp-route-id="@Model?.IdSortie" class="btn btn-warning">Modif.</a>
+    <a asp-action="Index" class="btn btn-secondary">Retour</a>
+</div>

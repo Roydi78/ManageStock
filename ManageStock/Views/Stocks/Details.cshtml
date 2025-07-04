@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ManageStock.Models.Stock>
+
+@{
+    ViewData["Title"] = "Details du Stock";
+}
+
+<div>
+    <h4>Détails du Stock</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstOrDefault().IdProduitNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.FirstOrDefault()?.IdProduitNavigation != null)
+            {
+                @Html.DisplayFor(model => model.FirstOrDefault().IdProduitNavigation.Nom)
+            }
+            else
+            {
+                <span>N/A</span>
+            }
+        </dd>
+    </dl>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdEntrepotNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantitéDisponible)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.IdEntrepotNavigation != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.IdEntrepotNavigation.Nom)
+                    }
+                    else
+                    {
+                        <span>N/A</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuantitéDisponible)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Retour</a>
+</div>

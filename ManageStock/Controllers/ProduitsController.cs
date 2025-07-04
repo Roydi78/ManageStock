@@ -7,24 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ManageStock.Data;
 using ManageStock.Models;
+using ManageStock.Data.Services.Produit;
+using ManageStock.Data.Services.Categorie;
+using ManageStock.Data.Services.Fournisseur;
 
 namespace ManageStock.Controllers
 {
     public class ProduitsController : Controller
     {
-        private readonly ManageStockContext _context;
+        private readonly IProduitService _ProduitService;
+        private readonly ICategorieService _CategorieService;
+        private readonly IFournisseurService _FournisseurService;
 
-        public ProduitsController(ManageStockContext context)
+
+        public ProduitsController(IProduitService ProduitService, ICategorieService CategorieService, IFournisseurService FournisseurService)
         {
-            _context = context;
+            _ProduitService = ProduitService;
+            _CategorieService = CategorieService ?? throw new ArgumentNullException(nameof(CategorieService));
+            _FournisseurService = FournisseurService ?? throw new ArgumentNullException(nameof(FournisseurService));
         }
+
 
         // GET: Produits
         public async Task<IActionResult> Index()
         {
-            var manageStockContext = _context.Produits.Include(p => p.IdCategorieNavigation).Include(p => p.IdFournisseurNavigation);
-            return View(await manageStockContext.ToListAsync());
-            //return View( await _context.Produits.ToListAsync());
+            return View(await _ProduitService.GetAll());    
         }
 
         // GET: Produits/Details/5
@@ -35,10 +42,7 @@ namespace ManageStock.Controllers
                 return NotFound();
             }
 
-            var produit = await _context.Produits
-                .Include(p => p.IdCategorieNavigation)
-                .Include(p => p.IdFournisseurNavigation)
-                .FirstOrDefaultAsync(m => m.IdProduit == id);
+            var produit = await _ProduitService.DetailProduit(id.Value);
             if (produit == null)
             {
                 return NotFound();
@@ -47,11 +51,14 @@ namespace ManageStock.Controllers
             return View(produit);
         }
 
-        // GET: Produits/Create
+        // Fix for the CS1503 error in the Create method
         public IActionResult Create()
         {
-            ViewData["IdCategorie"] = new SelectList(_context.Categories, "IdCategorie", "Nom");
-            ViewData["IdFournisseur"] = new SelectList(_context.Fournisseurs, "IdFournisseur", "Nom");
+            // Await the result of the asynchronous GetAll() method to resolve the Task<IEnumerable<Categorie>> to IEnumerable<Categorie>
+            var categories = _CategorieService.GetAll().Result;
+            var fournisseurs = _FournisseurService.GetAll().Result;
+            ViewData["IdCategorie"] = new SelectList(categories, "IdCategorie", "Nom");
+            ViewData["IdFournisseur"] = new SelectList(fournisseurs, "IdFournisseur", "Nom");
             return View();
         }
 
@@ -62,12 +69,14 @@ namespace ManageStock.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(produit);
-                await _context.SaveChangesAsync();
+                await _ProduitService.Add(produit);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategorie"] = new SelectList(_context.Categories, "IdCategorie", "Nom", produit.IdCategorie);
-            ViewData["IdFournisseur"] = new SelectList(_context.Fournisseurs, "IdFournisseur", "Nom", produit.IdFournisseur);
+
+            var categories = _CategorieService.GetAll().Result;
+            var fournisseurs = _FournisseurService.GetAll().Result;
+            ViewData["IdCategorie"] = new SelectList(categories, "IdCategorie", "Nom", produit.IdCategorie);
+            ViewData["IdFournisseur"] = new SelectList(fournisseurs, "IdFournisseur", "Nom", produit.IdFournisseur);
             return View(produit);
         }
 
@@ -79,19 +88,20 @@ namespace ManageStock.Controllers
                 return NotFound();
             }
 
-            var produit = await _context.Produits.FindAsync(id);
+            var produit = await _ProduitService.GetById((int)id);
             if (produit == null)
             {
                 return NotFound();
             }
-            ViewData["IdCategorie"] = new SelectList(_context.Categories, "IdCategorie", "Nom", produit.IdCategorie);
-            ViewData["IdFournisseur"] = new SelectList(_context.Fournisseurs, "IdFournisseur", "Nom", produit.IdFournisseur);
+
+            var categories = _CategorieService.GetAll().Result;
+            var fournisseurs = _FournisseurService.GetAll().Result;
+            ViewData["IdCategorie"] = new SelectList(categories, "IdCategorie", "Nom", produit.IdCategorie);
+            ViewData["IdFournisseur"] = new SelectList(fournisseurs, "IdFournisseur", "Nom", produit.IdFournisseur);
             return View(produit);
         }
 
         // POST: Produits/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdProduit,Nom,Description,CodeBarres,PrixUnitaire,SeuilAlerte,IdCategorie,IdFournisseur")] Produit produit)
@@ -105,12 +115,12 @@ namespace ManageStock.Controllers
             {
                 try
                 {
-                    _context.Update(produit);
-                    await _context.SaveChangesAsync();
+                    await _ProduitService.Update(produit);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProduitExists(produit.IdProduit))
+                    var existingProduit = await _ProduitService.Exists(produit.IdProduit);
+                    if (!existingProduit)
                     {
                         return NotFound();
                     }
@@ -121,8 +131,11 @@ namespace ManageStock.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCategorie"] = new SelectList(_context.Categories, "IdCategorie", "Nom", produit.IdCategorie);
-            ViewData["IdFournisseur"] = new SelectList(_context.Fournisseurs, "IdFournisseur", "Nom", produit.IdFournisseur);
+            // If we got this far, something failed; redisplay form
+            var categories = _CategorieService.GetAll().Result;
+            var fournisseurs = _FournisseurService.GetAll().Result;
+            ViewData["IdCategorie"] = new SelectList(categories, "IdCategorie", "Nom", produit.IdCategorie);
+            ViewData["IdFournisseur"] = new SelectList(fournisseurs, "IdFournisseur", "Nom", produit.IdFournisseur);
             return View(produit);
         }
 
@@ -134,10 +147,7 @@ namespace ManageStock.Controllers
                 return NotFound();
             }
 
-            var produit = await _context.Produits
-                .Include(p => p.IdCategorieNavigation)
-                .Include(p => p.IdFournisseurNavigation)
-                .FirstOrDefaultAsync(m => m.IdProduit == id);
+            var produit = await _ProduitService.FirstorDefault((int)id);
             if (produit == null)
             {
                 return NotFound();
@@ -151,19 +161,13 @@ namespace ManageStock.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var produit = await _context.Produits.FindAsync(id);
-            if (produit != null)
-            {
-                _context.Produits.Remove(produit);
-            }
-
-            await _context.SaveChangesAsync();
+            await _ProduitService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProduitExists(int id)
+        private async Task<bool> ProduitExists(int id)
         {
-            return _context.Produits.Any(e => e.IdProduit == id);
+            return await _ProduitService.Exists(id);
         }
     }
 }

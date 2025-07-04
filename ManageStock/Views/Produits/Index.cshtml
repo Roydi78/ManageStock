@@ -1,25 +1,20 @@
 ﻿@model IEnumerable<ManageStock.Models.Produit>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Produits";
 }
 
-<h1>Index</h1>
+<h4>Liste des Produits </h4>
+<hr />
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Ajouter +</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Nom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CodeBarres)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PrixUnitaire)
@@ -43,12 +38,6 @@
                 @Html.DisplayFor(modelItem => item.Nom)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CodeBarres)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.PrixUnitaire)
             </td>
             <td>
@@ -65,9 +54,9 @@
            
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdProduit">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdProduit">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdProduit">Delete</a>
+                    <a asp-action="Details" asp-route-id="@item.IdProduit" class="btn btn-info">Détail</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdProduit" class="btn btn-warning">Modif.</a>
+                    <a asp-action="Delete" asp-route-id="@item.IdProduit" class="btn btn-danger">Suppr.</a>
             </td>
         </tr>
 }

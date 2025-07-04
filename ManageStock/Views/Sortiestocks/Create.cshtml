@@ -1,0 +1,75 @@
+﻿@model ManageStock.Models.Sortiestock
+
+@{
+    ViewData["Title"] = "Ajouter une Sortie de Stock";
+}
+
+<h4>Ajouter une Sortie de Stock</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdProduit" class="control-label"></label>
+                <select id="IdProduit" name="IdProduit" class="form-control" onchange="updateDetails()">
+                    <option value="">-- Sélectionner un produit --</option>
+                    @foreach (var item in (IEnumerable<dynamic>)ViewData["ProduitStock"])
+                    {
+                        <option value="@item.Id"
+                                data-identrepot="@item.IdEntrep"
+                                data-entrepot="@item.EntrepotNom"
+                                data-quantite="@item.Qtedispo">
+                            @item.ProduitNom - @item.EntrepotNom - Qté disp: @item.Qtedispo
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantité" class="control-label"></label>
+                <input asp-for="Quantité" class="form-control" />
+                <span asp-validation-for="Quantité" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Destination" class="control-label"></label>
+                <input asp-for="Destination" class="form-control" />
+                <span asp-validation-for="Destination" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Entrepôt</label>
+                <input type="text" id="EntrepotNom" class="form-control" readonly />
+                <input type="hidden" asp-for="IdEntrepot" />
+            </div>
+            <div class="form-group">
+                <label>Quantité disponible</label>
+                <input type="text" id="QuantiteDisponible" class="form-control" readonly />
+            </div>
+            <hr style="visibility: hidden;" />
+            <div class="form-group d-flex gap-2">
+                <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Retour</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function updateDetails() {
+            const select = document.getElementById("IdProduit");
+            const selectedOption = select.options[select.selectedIndex];
+
+            const entrepot = selectedOption.getAttribute("data-entrepot");
+            const quantite = selectedOption.getAttribute("data-quantite");
+            const idEntrepot = selectedOption.getAttribute("data-identrepot");
+
+            document.getElementById("EntrepotNom").value = entrepot || "";
+            document.getElementById("QuantiteDisponible").value = quantite || "";
+            document.getElementById("IdEntrepot").value = idEntrepot || 0;
+        }
+    </script>
+                                                                            
+}

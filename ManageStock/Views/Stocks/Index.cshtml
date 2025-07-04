@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ManageStock.Models.Stock>
+
+@{
+    ViewData["Title"] = "Stock";
+}
+
+
+<h4>Stock </h4>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.IdProduitNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuantitéDisponible)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            
+            <td>
+                @if (item.IdProduitNavigation != null)
+                {
+                    @Html.DisplayFor(modelItem => item.IdProduitNavigation.Nom)
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuantitéDisponible)
+                </td>
+                <td align="right">
+                    <a asp-action="Details" asp-route-id="@item.IdProduit" class="btn btn-info">Détail</a>
+                </td>
+        </tr>
+}
+    </tbody>
+</table>

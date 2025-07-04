@@ -1,0 +1,41 @@
+﻿@model ManageStock.Models.Entreestock
+
+@{
+    ViewData["Title"] = "Ajouter une Entrée de Stock";
+}
+
+<h4>Ajouter une Entrée de Stock</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdProduit" class="control-label"></label>
+                <select asp-for="IdProduit" class ="form-control" asp-items="ViewBag.IdProduit"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantité" class="control-label"></label>
+                <input asp-for="Quantité" class="form-control" />
+                <span asp-validation-for="Quantité" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdFournisseur" class="control-label"></label>
+                <select asp-for="IdFournisseur" class ="form-control" asp-items="ViewBag.IdFournisseur"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdEntrepot" class="control-label"></label>
+                <select asp-for="IdEntrepot" class ="form-control" asp-items="ViewBag.IdEntrepot"></select>
+            </div>
+            <hr style="visibility: hidden;" />
+            <div class="form-group d-flex gap-2">
+                <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Retour</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
