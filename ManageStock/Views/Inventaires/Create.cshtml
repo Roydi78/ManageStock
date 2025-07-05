@@ -1,0 +1,102 @@
+﻿@model ManageStock.Models.Inventaire
+
+@{
+    ViewData["Title"] = "Ajouter un inventaire";
+}
+
+<h4>Ajouter un inventaire</h4>
+<hr />
+
+<div class="row">
+    
+    <div class="col-md-6">
+        <form asp-action="Create" method="post" id="inventaire-form">
+            <div class="form-group">
+                <label asp-for="IdEntrepot" class="control-label"></label>
+                <select asp-for="IdEntrepot" asp-items="ViewBag.Entrepots" class="form-control"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Commentaire" class="control-label"></label>
+                <textarea asp-for="Commentaire" class="form-control"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+            <a asp-action="Index" class="btn btn-secondary">Retour</a>
+        </form>
+    </div>
+
+    <!-- Colonne droite : Détails de l'inventaire -->
+    <div class="col-md-6">
+        <h4>Détails de l'inventaire</h4>
+        <div id="details-container"></div>
+
+        <button type="button" class="btn btn-secondary mt-2" onclick="addDetailRow()">➕ Ajouter un produit</button>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let index = 0;
+
+    function addDetailRow() {
+        const container = document.getElementById("details-container");
+
+        const row = document.createElement("div");
+        row.className = "row mb-2 align-items-end";
+        row.dataset.index = index;
+
+        row.innerHTML = `
+            <div class="col-5">
+                <select name="Detailinventaires[${index}].IdProduit" class="form-control" onchange="checkDuplicateProduit(this)">
+                    ${getProduitOptions()}
+                </select>
+            </div>
+            <div class="col-4">
+                <input type="number" name="Detailinventaires[${index}].QuantitéComptée" class="form-control" min="0" />
+            </div>
+            <div class="col-3">
+                <button type="button" class="btn btn-danger" onclick="removeDetailRow(this)">❌</button>
+            </div>
+        `;
+
+        container.appendChild(row);
+        index++;
+    }
+
+    function removeDetailRow(button) {
+        const row = button.closest(".row");
+        row.remove();
+    }
+
+    function checkDuplicateProduit(selectElement) {
+        const selectedValue = selectElement.value;
+        if (!selectedValue) return;
+
+        const allSelects = document.querySelectorAll('select[name$=".IdProduit"]');
+        let count = 0;
+
+        allSelects.forEach(sel => {
+            if (sel.value === selectedValue) {
+                count++;
+            }
+        });
+
+        if (count > 1) {
+            alert("Ce produit a déjà été sélectionné. Veuillez en choisir un autre.");
+            selectElement.value = "";
+        }
+    }
+
+    function getProduitOptions() {
+        const produits = @Html.Raw(Json.Serialize(ViewBag.Produits));
+        return produits.map(p => `<option value="${p.value}">${p.text}</option>`).join('');
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        addDetailRow(); // ajoute une ligne par défaut
+    }
+  
+    );
+</script>
+}

@@ -1,0 +1,157 @@
+﻿@model ManageStock.Models.Inventaire
+
+@{
+    ViewData["Title"] = "Modifier l'inventaire"; ;
+}
+
+<h4>Modifier un inventaire</h4>
+<hr />
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="IdInventaire" />
+
+    <div class="row">
+        <!-- Colonne gauche : Entrepôt + Commentaire -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="DateInventaire" class="control-label"></label>
+                <input asp-for="DateInventaire" class="form-control" readonly/>
+                <span asp-validation-for="DateInventaire" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdEntrepot" class="control-label"></label>
+                <select asp-for="IdEntrepot" asp-items="ViewBag.Entrepots" class="form-control" disabled="true"></select>
+                <input type="hidden" asp-for="IdEntrepot" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Commentaire" class="control-label"></label>
+                <textarea asp-for="Commentaire" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+            <a asp-action="Index" class="btn btn-secondary">Retour</a>
+        </div>
+
+        <!-- Colonne droite : Détails de l'inventaire -->
+        <div class="col-md-6">
+            <h4>Détails de l'inventaire</h4>
+            <div id="details-container">
+                @for (int i = 0; i < Model.Detailinventaires.Count; i++)
+                {
+                    <div class="row mb-2 align-items-end" data-index="@i">
+                        <input type="hidden" name="Detailinventaires[@i].IdDetail" value="@Model.Detailinventaires.ElementAt(i).IdDetail" />
+                        <input type="hidden" name="Detailinventaires[@i].IdInventaire" value="@Model.IdInventaire" />
+
+                        <div class="col-5">
+                            <select name="Detailinventaires[@i].IdProduit" class="form-control" onchange="checkDuplicateProduit(this)">
+                                @foreach (var produit in (IEnumerable<SelectListItem>)ViewBag.Produits)
+                                {
+                                    <option value="@produit.Value" selected="@(produit.Value == Model.Detailinventaires.ElementAt(i).IdProduit.ToString() ? "selected" : null)">
+                                        @produit.Text
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <input type="number" name="Detailinventaires[@i].QuantitéComptée" class="form-control"
+                                   value="@Model.Detailinventaires.ElementAt(i).QuantitéComptée" min="0" />
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-danger" onclick="removeDetailRow(this)">❌</button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <button type="button" class="btn btn-secondary mt-2" onclick="addDetailRow()">➕ Ajouter un produit</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+<script>
+    let index = @Model.Detailinventaires.Count;
+
+    function addDetailRow() {
+        const container = document.getElementById("details-container");
+
+        const row = document.createElement("div");
+        row.className = "row mb-2 align-items-end";
+        row.dataset.index = index;
+
+        row.innerHTML = `
+            <input type="hidden" name="Detailinventaires[${index}].IdDetail" value="0" />
+            <input type="hidden" name="Detailinventaires[${index}].IdInventaire" value="@Model.IdInventaire" />
+
+            <div class="col-5">
+                <select name="Detailinventaires[${index}].IdProduit" class="form-control" onchange="checkDuplicateProduit(this)">
+                    ${getProduitOptions()}
+                </select>
+            </div>
+            <div class="col-4">
+                <input type="number" name="Detailinventaires[${index}].QuantitéComptée" class="form-control" min="0" />
+            </div>
+            <div class="col-3">
+                <button type="button" class="btn btn-danger" onclick="removeDetailRow(this)">❌</button>
+            </div>
+        `;
+
+        container.appendChild(row);
+        index++;
+    }
+
+    function removeDetailRow(button) {
+        const row = button.closest(".row");
+        row.remove();
+        reindexDetailRows();
+    }
+
+    function checkDuplicateProduit(selectElement) {
+        const selectedValue = selectElement.value;
+        if (!selectedValue) return;
+
+        const allSelects = document.querySelectorAll('select[name$=".IdProduit"]');
+        let count = 0;
+
+        allSelects.forEach(sel => {
+            if (sel.value === selectedValue) {
+                count++;
+            }
+        });
+
+        if (count > 1) {
+            alert("Ce produit a déjà été sélectionné. Veuillez en choisir un autre.");
+            selectElement.value = "";
+        }
+    }
+
+    function getProduitOptions() {
+        const produits = @Html.Raw(Json.Serialize(ViewBag.Produits));
+        return produits.map(p => `<option value="${p.value}">${p.text}</option>`).join('');
+    }
+
+   function reindexDetailRows() {
+            const rows = document.querySelectorAll("#details-container .row");
+            index = 0;
+
+            rows.forEach(row => {
+                row.dataset.index = index;
+
+                const inputs = row.querySelectorAll("input, select");
+                inputs.forEach(input => {
+                    const name = input.getAttribute("name");
+                    if (name && name.includes("Detailinventaires[")) {
+                        const newName = name.replace(/Detailinventaires\[\d+\]/, `Detailinventaires[${index}]`);
+                        input.setAttribute("name", newName);
+                    }
+                });
+
+                index++;
+            });
+        }
+
+
+</script>
+}
+
+

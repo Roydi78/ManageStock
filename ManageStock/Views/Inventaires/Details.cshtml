@@ -1,0 +1,68 @@
+﻿@model ManageStock.Models.Inventaire
+
+@{
+    ViewData["Title"] = "Details de l'inventaire";
+}
+
+
+<div>
+    <h4>Details de l'inventaire</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DateInventaire)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DateInventaire)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdEntrepotNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdEntrepotNavigation.Nom)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Commentaire)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Commentaire)
+        </dd>
+        
+    </dl>
+</div>
+<div>
+    <hr style="visibility: hidden;" />
+</div>
+<div>
+<table class="table">
+    <thead>
+        <tr>
+           
+            <th>
+                    @Html.DisplayNameFor(model => model.Detailinventaires.First().IdProduitNavigation.Nom)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.Detailinventaires.First().QuantitéComptée)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var item in Model.Detailinventaires)
+        {
+            <tr>
+               
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdProduitNavigation.Nom)
+                </td>
+                <td>
+                        @Html.DisplayFor(modelItem => item.QuantitéComptée)
+                </td>
+            </tr>
+        }
+    </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.IdInventaire" class="btn btn-warning">Modif.</a>
+    <a asp-action="Index" class="btn btn-secondary">Retour</a>
+</div>
